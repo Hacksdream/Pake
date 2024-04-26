@@ -2,7 +2,7 @@ name: Sync and Release
 
 on:
   schedule:
-    - cron: '0 * * * *'  # 每小时执行一次
+    - cron: '0 */3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -16,17 +16,18 @@ jobs:
           uses: actions/checkout@v3
 
         - name: Sync Upstream
-          uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+          uses: TG908/fork-sync@v1.6.3
           with:
-              target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-              upstream_sync_repo: tw93/Pake
-              upstream_sync_branch: main
-              target_sync_branch: main
-              test_mode: false
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            owner: tw93 # fork 的上游仓库 user
+            head: main # fork 的上游仓库 branch
+            base: main # 本地仓库 branch
+        
 
   build:
     runs-on: windows-latest
     needs: sync_with_upstream
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
