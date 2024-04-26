@@ -22,10 +22,11 @@ jobs:
 
     - name: Sync fork
       run: |
-        git fetch origin main
+        git remote add upstream https://github.com/tw93/Pake.git
+        git fetch upstream main
         git checkout main
-        git pull
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Hacksdream/Pake.git main
+        git merge upstream/main
+        git push origin main
 
   build:
     runs-on: windows-latest
