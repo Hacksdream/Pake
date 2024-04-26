@@ -6,27 +6,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync:
+  sync_with_upstream:
+    name: Sync with Upstream
     runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        repository: 'tw93/Pake'
-        fetch-depth: 0
+        - name: Checkout target repo
+          uses: actions/checkout@v3
 
-    - name: Setup Git
-      run: |
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email 'actions@github.com'
-
-    - name: Sync fork
-      run: |
-        git remote add upstream https://github.com/tw93/Pake.git
-        git fetch upstream main
-        git checkout main
-        git merge upstream/main
-        git push origin main
+        - name: Sync Upstream
+          uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+          with:
+              target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+              upstream_sync_repo: tw93/Pake
+              upstream_sync_branch: main
+              target_sync_branch: main
+              test_mode: false
 
   build:
     runs-on: windows-latest
